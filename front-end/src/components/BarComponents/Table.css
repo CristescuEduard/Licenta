@@ -1,0 +1,12 @@
+#rotate {
+    vertical-align: top;
+    transform: rotate(7deg);
+    vertical-align: top;
+    text-align: center;
+    height: 20;
+    -webkit-transform: rotate(90deg);
+}
+
+.rotateText {
+    -webkit-transform: rotate(270deg);
+}

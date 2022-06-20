@@ -1,0 +1,25 @@
+.Gallery {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    width: 100%;
+}
+
+.images {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    border: black;
+    border-style: solid;
+    margin-left: 10%;
+    width: 70%;
+    height: 80%;
+}
+
+.imagine {
+    padding-left: 10%;
+    margin-right: 5%;
+}

@@ -1,0 +1,11 @@
+.AdminPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.pop {
+    display: flex;
+    justify-content: space-between;
+    padding-left: 5px;
+}

@@ -1,0 +1,75 @@
+.addProduct {
+    margin: 5% auto;
+    width: 40%;
+    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.2);
+    position: relative;
+    border-radius: 10px;
+    height: 600px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+.main {
+    border-radius: 0 10px 10px 0;
+    position: relative;
+}
+.container {
+    position: absolute;
+    top: 50%;
+    left: 100%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.inputContainer {
+    margin-bottom: 0.5rem;
+    width: 80%;
+}
+
+.submit-btn-register {
+    width: 80%;
+    height: 40px;
+    margin-top: 10px;
+    margin-right: 45%;
+    border-radius: 2px;
+    background: linear-gradient(
+        90deg,
+        rgba(93, 115, 128, 0.76) 0%,
+        rgb(33, 156, 158) 100%
+    );
+    outline: none;
+    border: none;
+    color: #fff;
+    font-size: 1rem;
+}
+
+.title {
+    font-size: 2rem;
+    text-align: center;
+    margin-right: 15%;
+    width: 80%;
+    margin-bottom: 1rem;
+    color: #fff;
+}
+
+.register-input {
+    text-align: center;
+    margin-bottom: 0.5rem;
+    width: 80%;
+}
+
+.register-label {
+    display: inline-block;
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+    color: #fff;
+}
+
+.loginBtns {
+    text-align: center;
+    margin-right: 10%;
+}
