@@ -7,7 +7,7 @@ const controller = {
     addOrder: async (req, res) => {
         try {
             let reqBody = req.body;
-            if (reqBody.idTable && reqBody.idUser) {
+            if (reqBody.idTable) {
                 let order = await OrderDB.create(req.body);
                 res.status(201).send({
                     message: "Created order successfully",
@@ -28,7 +28,7 @@ const controller = {
                         include: [
                             {
                                 model: ProductDB,
-                                where: { category: "bucatarie" },
+                                where: { category: "Kitchen" },
                                 required: true,
                             },
                         ],
@@ -60,6 +60,17 @@ const controller = {
         }
     },
 
+    getOrder: async (req, res) => {
+        try {
+            const order = await OrderDB.findOne({
+                where: { idOrder: req.params.orderId },
+            });
+            return res.status(200).send(order.dataValues);
+        } catch (err) {
+            return res.status(500).send(err);
+        }
+    },
+
     setFinished: async (req, res) => {
         try {
             const order = await OrderDB.findOne({
@@ -83,7 +94,7 @@ const controller = {
                         include: [
                             {
                                 model: ProductDB,
-                                where: { category: "bucatarie" },
+                                where: { category: "Kitchen" },
                             },
                         ],
                     },
@@ -149,7 +160,9 @@ const controller = {
                         });
 
                         if (product) {
-                            sum += product.dataValues.price;
+                            sum +=
+                                product.dataValues.price *
+                                element.dataValues.productQuantity;
                         }
                         if (list[nr - 1].dataValues == element.dataValues)
                             order.update({ totalSum: sum });
@@ -161,6 +174,28 @@ const controller = {
             return res.status(200).send();
         } catch (err) {
             return res.status(500).send(err);
+        }
+    },
+
+    deleteOrder: async (req, res) => {
+        try {
+            let order = await OrderDB.findOne({
+                where: {
+                    idOrder: req.params.idOrder,
+                },
+            });
+            if (order) {
+                OrderDB.destroy({
+                    where: {
+                        idOrder: req.params.idOrder,
+                    },
+                });
+                res.status(201).send({ message: "Order deleted" });
+            } else {
+                res.status(404).send({ message: "Not found" });
+            }
+        } catch (err) {
+            res.status(500).send({ message: `${err}` });
         }
     },
 };

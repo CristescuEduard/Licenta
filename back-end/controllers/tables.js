@@ -68,6 +68,45 @@ const controller = {
             return res.status(500).send(err);
         }
     },
+    updateTable: async (req, res) => {
+        try {
+            const table = await TableDB.findOne({
+                where: { idTable: req.params.idTable },
+            });
+            if (table) {
+                table.update({
+                    tableSize: req.body.tableSize,
+                    orientation: req.body.orientation,
+                });
+                return res.status(200).send({ message: "O mers" });
+            } else {
+                return res.status(404).send({ message: "Not found" });
+            }
+        } catch (err) {
+            return res.status(500).send(err);
+        }
+    },
+
+    delete: async (req, res) => {
+        try {
+            if (req.params.tableId > 0) {
+                let table = await TableDB.findOne({
+                    where: { idTable: req.params.tableId },
+                });
+
+                if (table == null) {
+                    res.status(404).send({ message: "Product not found" });
+                } else {
+                    TableDB.destroy({
+                        where: { idTable: req.params.tableId },
+                    });
+                    res.status(201).send({ message: "Product deleted" });
+                }
+            }
+        } catch (err) {
+            res.status(500).send({ message: `${err}` });
+        }
+    },
 };
 
 module.exports = controller;

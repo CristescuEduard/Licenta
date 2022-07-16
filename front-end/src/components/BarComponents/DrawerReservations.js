@@ -1,25 +1,20 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import "./DrawerReservations.css";
 import {
     Drawer,
-    DrawerBody,
-    DrawerFooter,
-    DrawerHeader,
     DrawerOverlay,
     DrawerContent,
-    DrawerCloseButton,
     Button,
-    Stack,
-    Box,
     useDisclosure,
-    FormLabel,
-    Input,
-    InputGroup,
-    InputLeftAddon,
-    InputRightAddon,
-    Select,
-    Textarea,
+    Accordion,
+    AccordionItem,
+    AccordionButton,
+    Box,
+    AccordionPanel,
 } from "@chakra-ui/react";
+
+import { AddIcon, DeleteIcon, MinusIcon } from "@chakra-ui/icons";
 
 function DrawerExample() {
     const { isOpen, onOpen, onClose } = useDisclosure();
@@ -34,18 +29,23 @@ function DrawerExample() {
                 .then((res) => {
                     const reservationsDB = res.data;
                     setReservations(reservationsDB);
-                    console.log(reservations);
                 });
         } catch (err) {
             console.error(err.response);
         }
-    }, []);
+    }, [reservations]);
+
+    function deleter(idReservation) {
+        var id = idReservation;
+        axios.delete("http://localhost:8080/deleteReservation/" + id);
+    }
 
     return (
         <>
             <Button colorScheme="teal" onClick={onOpen}>
                 See Reservations
             </Button>
+
             <Drawer
                 isOpen={isOpen}
                 placement="right"
@@ -54,20 +54,90 @@ function DrawerExample() {
                 size="md"
             >
                 <DrawerOverlay />
+
                 <DrawerContent>
-                    {Array.from(reservations).map((reservation) => {
-                        return (
-                            <div key={reservation.idReservation}>
-                                {" "}
-                                Rezervarea pentru masa: {reservation.idTable} va
-                                incepe la ora:
-                                {new Date(
-                                    reservation.reservationStartTime
-                                ).getHours()}{" "}
-                                si va dura: {reservation.time} ore
-                            </div>
-                        );
-                    })}
+                    <div className="Drawer">
+                        {Array.from(reservations)
+                            .sort(function (a, b) {
+                                return (
+                                    new Date(a.reservationStartTime) -
+                                    new Date(b.reservationStartTime)
+                                );
+                            })
+                            .map((reservation) => {
+                                return (
+                                    <div
+                                        key={reservation.idReservation}
+                                        className="ReservationItem"
+                                    >
+                                        <Accordion allowMultiple>
+                                            <AccordionItem>
+                                                {({ isExpanded }) => (
+                                                    <>
+                                                        <h2>
+                                                            <div className="Item">
+                                                                <AccordionButton>
+                                                                    <Box
+                                                                        flex="1"
+                                                                        textAlign="left"
+                                                                    >
+                                                                        Reservation
+                                                                        for Date{" "}
+                                                                        {new Date(
+                                                                            reservation.reservationStartTime
+                                                                        ).getDate()}
+                                                                        {"/"}
+                                                                        {new Date(
+                                                                            reservation.reservationStartTime
+                                                                        ).getMonth() +
+                                                                            1}
+                                                                    </Box>
+
+                                                                    {isExpanded ? (
+                                                                        <MinusIcon fontSize="12px" />
+                                                                    ) : (
+                                                                        <AddIcon fontSize="12px" />
+                                                                    )}
+                                                                </AccordionButton>
+                                                            </div>
+                                                        </h2>
+
+                                                        <AccordionPanel pb={4}>
+                                                            <div className="Content">
+                                                                {" "}
+                                                                Table:{" "}
+                                                                {
+                                                                    reservation.idTable
+                                                                }{" "}
+                                                                start hour:{" "}
+                                                                {new Date(
+                                                                    reservation.reservationStartTime
+                                                                ).getHours()}{" "}
+                                                                duration:{" "}
+                                                                {
+                                                                    reservation.time
+                                                                }{" "}
+                                                                hours
+                                                                <Button
+                                                                    variant="ghost"
+                                                                    onClick={() =>
+                                                                        deleter(
+                                                                            reservation.idReservation
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <DeleteIcon></DeleteIcon>
+                                                                </Button>
+                                                            </div>
+                                                        </AccordionPanel>
+                                                    </>
+                                                )}
+                                            </AccordionItem>
+                                        </Accordion>
+                                    </div>
+                                );
+                            })}
+                    </div>
                 </DrawerContent>
             </Drawer>
         </>

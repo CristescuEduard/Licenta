@@ -66,13 +66,7 @@ function Stock() {
         <div className="Stock">
             <NavBarMain />
 
-            <Box
-                w="30%"
-                borderWidth="1px"
-                borderRadius="lg"
-                overflow="hidden"
-                h="50%"
-            >
+            <Box w="30%" overflow="hidden" h="40%">
                 <div className={classes.root}>
                     <Input
                         placeholder="Search Product"
@@ -118,11 +112,11 @@ function Stock() {
                                                 <ListItemText
                                                     id={item}
                                                     primary={
-                                                        item.productName +
-                                                        " " +
-                                                        item.price +
-                                                        " " +
-                                                        item.totalQuantity
+                                                        item.productName
+                                                        // + " price:" +
+                                                        // item.price +
+                                                        // " quantity: " +
+                                                        // item.totalQuantity
                                                     }
                                                 />
                                                 <div className={classes.ul}>
@@ -150,6 +144,8 @@ function Stock() {
                         </li>
                     ))}
                 </List>
+            </Box>
+            <div align="center">
                 <Button
                     onClick={() => {
                         setProduct(null);
@@ -159,7 +155,7 @@ function Stock() {
                 >
                     Add Product
                 </Button>
-            </Box>
+            </div>
             <CustomModal
                 subCategory={subCategory}
                 close={close}

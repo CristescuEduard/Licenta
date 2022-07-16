@@ -1,98 +1,113 @@
-import React, { useContext, useState, Component } from "react";
-//import "react-toastify/dist/ReactToastify.css";
-// import axios from "axios";
-// import { ToastContainer, toast } from "react-toastify";
-// import { useRouter, withRouter } from "next/router";
+import React, { useState } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import NavBarMain from "../../components/NavBarMain/NavBarMain";
+import { Button, Input, useToast } from "@chakra-ui/react";
 import "./login.css";
 
 const Login = () => {
     const [email, setEmail] = useState("");
     const [parola, setParola] = useState("");
     const history = useNavigate();
+    const toast = useToast();
 
-    // const handleSubmit = async (e) => {
-    //     e.preventDefault();
-    //     const formValues = {
-    //         email,
-    //         parola,
-    //     };
-    //     //console.log(formValues);
-    //     try {
-    //         if (email === "") {
-    //             toast.error("Introduceti email-ul!");
-    //             return;
-    //         }
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        const formValues = {
+            email,
+            parola,
+        };
+        console.log(formValues);
+        try {
+            if (email === "") {
+                toast({
+                    title: `Email missing`,
+                    position: "top-right",
+                    duration: 3000,
+                    status: "error",
+                    isClosable: true,
+                });
+                return;
+            }
 
-    //         if (
-    //             !/([a-zA-Z0-9]+)([_.-{1}])?([a-zA-Z0-9]+)@([a-zA-Z0-9]+)([.])([a-zA-Z.]+)/g.test(
-    //                 email
-    //             )
-    //         ) {
-    //             toast.error("Formatul email-ului nu este valid!");
-    //             return;
-    //         }
+            if (
+                !/([a-zA-Z0-9]+)([_.-{1}])?([a-zA-Z0-9]+)@([a-zA-Z0-9]+)([.])([a-zA-Z.]+)/g.test(
+                    email
+                )
+            ) {
+                toast({
+                    title: `Email in wrong format`,
+                    position: "top-right",
+                    duration: 3000,
+                    status: "error",
+                    isClosable: true,
+                });
+                return;
+            }
 
-    //         if (parola === "") {
-    //             toast.error("Introduceti parola!");
-    //             return;
-    //         }
+            if (parola === "") {
+                toast({
+                    title: `Missing Password`,
+                    position: "top-right",
+                    duration: 3000,
+                    status: "error",
+                    isClosable: true,
+                });
+                return;
+            }
 
-    //         const response = await axios.post(
-    //             "http://localhost:8080/login/",
-    //             formValues
-    //         );
-
-    //         if (response.data && response.data.login === true) {
-    //             localStorage.setItem("id", response.data.user.id);
-    //             history("/login");
-    //         } else {
-    //             toast.error(response.data.message);
-    //         }
-    //     } catch (err) {
-    //         toast.error(err.response.data.message);
-    //         console.warn(err);
-    //     }
-    // };
+            try {
+                const response = await axios.post(
+                    "http://localhost:8080/login",
+                    { email: formValues.email, password: formValues.parola }
+                );
+                if (response.data && response.data.login === true) {
+                    if (email.match("bar")) {
+                        history("/bar/orders");
+                    } else if (email.match("kitchen")) {
+                        history("/kitchen/orders");
+                    } else history("/admin/tables");
+                }
+            } catch {
+                toast({
+                    title: `Wrong Email or Password`,
+                    position: "top-right",
+                    duration: 9000,
+                    status: "error",
+                    isClosable: true,
+                });
+            }
+        } catch (err) {
+            toast.error(err.response.data.message);
+            console.warn(err);
+        }
+    };
 
     return (
         <div className="login">
-            <NavBarMain />
             <div className="login-right">
                 <form className="container">
-                    <h1 className="title">Bine ai venit!</h1>
+                    <h1 className="title">Welcome!</h1>
                     <div className="inputContainer">
-                        <input
-                            type="text"
+                        <Input
                             placeholder="Email"
-                            name="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            className="register-input"
+                            onChange={(valueString) => {
+                                setEmail(valueString.currentTarget.value);
+                            }}
                         />
                     </div>
                     <div className="inputContainer">
-                        <input
+                        <Input
+                            placeholder="Password"
                             type="password"
-                            placeholder="Introduceti parola"
-                            name="parola"
-                            value={parola}
-                            onChange={(e) => setParola(e.target.value)}
-                            className="register-input"
+                            onChange={(valueString) => {
+                                setParola(valueString.currentTarget.value);
+                            }}
                         />
                     </div>
                     <div className="loginBtns">
-                        <button
-                            type="submit"
-                            //onClick={handleSubmit}
-                            className="submit-btn-login"
-                        >
+                        <Button colorScheme="facebook" onClick={handleSubmit}>
                             Login
-                        </button>
-                        <span className="form-input-login">
-                            Reggister <a href="/register">here</a>
-                        </span>
+                        </Button>
                     </div>
                     <div className="loginBtns"></div>
                 </form>

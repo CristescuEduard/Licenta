@@ -1,0 +1,8 @@
+.tables {
+    width: 800;
+    height: 800;
+    background-color: "white";
+    margin-top: 150;
+    border: "1px solid black";
+    position: "relative";
+}

@@ -1,25 +1,20 @@
 const UserDB = require("../models").Users;
 const controller = {
     login: (req, res) => {
-        UserDB.findOne({ where: { email: req.body.email } })
+        UserDB.findOne({
+            where: { email: req.body.email, password: req.body.password },
+        })
             .then((user) => {
-                const { parola } = req.body;
-                if (user === null) {
-                    res.status(401).send({
-                        message: "Nu exista acest cont!!",
+                if (user !== null) {
+                    res.status(200).send({
+                        message: "Successfully login",
+                        login: true,
+                        user,
                     });
                 } else {
-                    if (parola === user.password) {
-                        res.status(200).send({
-                            message: "Te-ai autentificat cu succes!",
-                            login: true,
-                            user,
-                        });
-                    } else {
-                        res.status(401).send({
-                            message: "Parola gresita!",
-                        });
-                    }
+                    res.status(401).send({
+                        message: "Wrong Credentials",
+                    });
                 }
             })
             .catch((error) => {
@@ -86,6 +81,7 @@ const controller = {
                 let user = await UserDB.findOne({
                     where: { idUser: req.params.userId },
                 });
+
                 if (user == null) {
                     res.status(404).send({ message: "User not found" });
                 } else {

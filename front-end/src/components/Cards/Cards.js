@@ -56,7 +56,7 @@ export default function RecipeReviewCard({ order }) {
         } catch (err) {
             console.error(err.response);
         }
-    }, []);
+    }, [order.idOrder]);
 
     function addTime() {
         try {

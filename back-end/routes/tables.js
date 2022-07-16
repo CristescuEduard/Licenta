@@ -8,4 +8,6 @@ router.get(
     "/getTablesForLayout/:idLayout",
     tablesController.getTablesForLayout
 );
+router.put("/updateTable/:idTable", tablesController.updateTable);
+router.delete("/deleteTable/:tableId", tablesController.delete);
 module.exports = router;

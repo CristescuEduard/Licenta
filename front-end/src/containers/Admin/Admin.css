@@ -2,10 +2,27 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    row-gap: 10%;
+    column-gap: 10%;
 }
 
 .pop {
     display: flex;
     justify-content: space-between;
     padding-left: 5px;
+}
+
+.sideZone {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 2%;
+    display: grid;
+    width: 400px;
+    border-radius: 10px;
+    outline: none;
+    border: none;
+    height: 500px;
+    row-gap: 2%;
+    background-color: rgb(255, 224, 189, 50%);
 }

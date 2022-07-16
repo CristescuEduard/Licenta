@@ -16,7 +16,7 @@ export const BoxDragPreview = memo(function BoxDragPreview({ tableName }) {
     );
     return (
         <div style={styles}>
-            <Box tableName={tableName} yellow={tickTock} preview />
+            <Box tableName={tableName} yellow={tickTock} table={null} />
         </div>
     );
 });

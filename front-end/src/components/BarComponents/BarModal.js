@@ -6,72 +6,174 @@ import {
     ModalHeader,
     ModalOverlay,
     TableContainer,
-    Checkbox,
+    Button,
     List,
     ListItem,
+    Input,
+    Divider,
+    Select,
 } from "@chakra-ui/react";
+import { InfoOutlineIcon } from "@chakra-ui/icons";
+import { AddIcon, MinusIcon } from "@chakra-ui/icons";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Button from "@material-ui/core/Button";
-import ButtonGroup from "@material-ui/core/ButtonGroup";
-import TextField from "@material-ui/core/TextField";
-import { makeStyles } from "@material-ui/core/styles";
 
-const useStyles = makeStyles((theme) => ({
-    container: {
-        display: "flex",
-        flexWrap: "wrap",
-    },
-    textField: {
-        marginLeft: theme.spacing(1),
-        marginRight: theme.spacing(1),
-        width: 200,
-    },
-}));
 export default function BarModal({
-    table,
     isOpen,
     close,
     reserved,
     reservation,
     id,
+    trueId,
     ordered,
 }) {
     const initialRef = React.useRef(null);
     const finalRef = React.useRef(null);
-
+    const [editing, setEditing] = useState(1);
+    const [total, setTotal] = useState(1);
     const [products, setProducts] = useState({});
+    const [allProducts, setAllProducts] = useState({});
+    const [productName, setProductName] = useState("");
+    const [quantity, setQuantity] = useState(0);
+    const [date, setDate] = useState(new Date());
+    const [time, setTime] = useState(0);
+    var sum = 0;
+    useEffect(() => {
+        try {
+            if (ordered) {
+                axios
+                    .get("http://localhost:8080/getOrder/" + ordered.idOrder)
+                    .then((res) => {
+                        const totalDB = res.data;
+                        setTotal(totalDB.totalSum);
+                    });
+            }
+        } catch (err) {
+            console.error(err.response);
+        }
+    });
 
-    const classes = useStyles();
+    useEffect(() => {
+        try {
+            if (ordered) {
+                axios.get("http://localhost:8080/getProducts").then((res) => {
+                    const totalDB = res.data;
+                    setAllProducts(totalDB);
+                });
+            }
+        } catch (err) {
+            console.error(err.response);
+        }
+    }, [ordered]);
+
+    function startOrder() {
+        try {
+            axios.post("http://localhost:8080/addOrder", {
+                idTable: trueId,
+            });
+            window.location.reload();
+        } catch (err) {
+            console.error(err.response);
+        }
+    }
+
+    function cancelReservation(id) {
+        axios.delete("http://localhost:8080/deleteReservation/" + id);
+        window.location.reload();
+    }
+    function startReservedOrder(id) {
+        try {
+            axios.delete("http://localhost:8080/deleteReservation/" + id);
+            axios.post("http://localhost:8080/addOrder", {
+                idTable: trueId,
+            });
+            window.location.reload();
+        } catch (err) {
+            console.error(err.response);
+        }
+    }
+
+    function makeReservation() {
+        try {
+            let data = new Date(date);
+            data.setHours(new Date(date).getHours() + 3);
+            axios.post("http://localhost:8080/addReservation", {
+                reservationStartTime: data,
+                time: time,
+                idTable: trueId,
+            });
+            window.location.reload();
+        } catch (err) {
+            console.error(err.response);
+        }
+    }
+
     function incrementQuantity(idProduct, idOrder, productQuantity) {
         productQuantity++;
+        setEditing(editing + 1);
         try {
             axios.put("http://localhost:8080/modifyBill", {
                 idProduct,
                 idOrder,
                 productQuantity,
             });
+        } catch (err) {
+            console.error(err.response);
+        }
+    }
+
+    function finish() {
+        axios.delete("http://localhost:8080/deleteBills/" + ordered.idOrder);
+        axios.delete("http://localhost:8080/deleteOrder/" + ordered.idOrder);
+        window.location.reload();
+    }
+
+    function addProduct() {
+        let product = Array.from(allProducts).find(
+            (prod) => prod.productName === productName
+        );
+        try {
+            axios.post("http://localhost:8080/addBill", {
+                productQuantity: quantity,
+                ProductIdProduct: product.idProduct,
+                OrderIdOrder: ordered.idOrder,
+            });
+            setEditing(editing + 1);
         } catch (err) {
             console.error(err.response);
         }
     }
     function decrementQuantity(idProduct, idOrder, productQuantity) {
         productQuantity--;
-        try {
-            axios.put("http://localhost:8080/modifyBill", {
-                idProduct,
-                idOrder,
-                productQuantity,
-            });
-        } catch (err) {
-            console.error(err.response);
+        setEditing(editing - 1);
+        if (productQuantity > 0) {
+            try {
+                axios.put("http://localhost:8080/modifyBill", {
+                    idProduct,
+                    idOrder,
+                    productQuantity,
+                });
+            } catch (err) {
+                console.error(err.response);
+            }
+        } else {
+            try {
+                axios.delete(
+                    "http://localhost:8080/deleteBill/" +
+                        idOrder +
+                        "/" +
+                        idProduct
+                );
+            } catch (err) {
+                console.error(err.response);
+            }
         }
+        axios.put("http://localhost:8080/setPrice/" + ordered.idOrder);
     }
 
     useEffect(() => {
         try {
             if (ordered) {
-                var orderId = ordered.idOrder;
                 axios
                     .get(
                         "http://localhost:8080/getProductsForOrder/" +
@@ -79,15 +181,35 @@ export default function BarModal({
                     )
                     .then((res) => {
                         const productsDB = res.data;
-                        console.log(productsDB);
                         setProducts(productsDB);
                     });
-                axios.put("http://localhost:8080/setPrice/" + orderId);
             }
         } catch (err) {
             console.error(err.response);
         }
-    }, [ordered]);
+    }, [ordered, editing]);
+
+    useEffect(() => {
+        try {
+            if (ordered) {
+                axios
+                    .get(
+                        "http://localhost:8080/getProductsForOrder/" +
+                            ordered.idOrder
+                    )
+                    .then((res) => {
+                        const productsDB = res.data;
+                        setProducts(productsDB);
+                    });
+            }
+        } catch (err) {
+            console.error(err.response);
+        }
+    }, [ordered, editing]);
+
+    Array.from(products).map(
+        (product) => (sum += product.Product.price * product.productQuantity)
+    );
 
     return (
         <Modal
@@ -97,33 +219,34 @@ export default function BarModal({
             onClose={close}
         >
             <ModalOverlay />
+
             <ModalContent>
                 <ModalHeader>{"Masa " + id}</ModalHeader>
                 <ModalCloseButton />
-                <ModalBody pb={6}>
-                    {ordered ? (
-                        <div>
-                            <TableContainer>
-                                <List>
-                                    {Array.from(products).map((product) => {
-                                        return (
-                                            <ListItem
-                                                key={product.Product.idProduct}
-                                            >
-                                                <Checkbox></Checkbox>
-                                                Product:{" "}
-                                                {
-                                                    product.Product.productName
-                                                }{" "}
-                                                Price: {product.Product.price}{" "}
-                                                Quantity:{" "}
-                                                {product.productQuantity}{" "}
-                                                {"   "}
-                                                <ButtonGroup
-                                                    disableElevation
-                                                    variant="contained"
-                                                    color="primary"
+                <div className="Modal">
+                    <ModalBody pb={6}>
+                        {ordered ? (
+                            <div>
+                                <TableContainer>
+                                    <List>
+                                        {Array.from(products).map((product) => {
+                                            return (
+                                                <ListItem
+                                                    key={
+                                                        product.Product
+                                                            .idProduct
+                                                    }
                                                 >
+                                                    Product:{" "}
+                                                    {
+                                                        product.Product
+                                                            .productName
+                                                    }{" "}
+                                                    Price:{" "}
+                                                    {product.Product.price}{" "}
+                                                    Quantity:{" "}
+                                                    {product.productQuantity}{" "}
+                                                    {"   "}
                                                     <Button
                                                         onClick={() =>
                                                             decrementQuantity(
@@ -132,8 +255,10 @@ export default function BarModal({
                                                                 product.productQuantity
                                                             )
                                                         }
+                                                        size="sm"
+                                                        variant="ghost"
                                                     >
-                                                        -
+                                                        <MinusIcon></MinusIcon>
                                                     </Button>
                                                     <Button
                                                         onClick={() =>
@@ -143,91 +268,150 @@ export default function BarModal({
                                                                 product.productQuantity
                                                             )
                                                         }
+                                                        size="sm"
+                                                        variant="ghost"
                                                     >
-                                                        +
+                                                        <AddIcon></AddIcon>
                                                     </Button>
-                                                </ButtonGroup>
-                                            </ListItem>
-                                        );
-                                    })}
-                                </List>
-                            </TableContainer>
+                                                </ListItem>
+                                            );
+                                        })}
+                                    </List>
+                                </TableContainer>
+                                <div>Suma este de {sum} RON</div>
 
-                            <div>Suma este de {ordered.totalSum} RON</div>
-                            <div>
-                                <form className={classes.container} noValidate>
-                                    <TextField
-                                        id="datetime-local"
-                                        label="Product Id"
-                                        type="number"
-                                        className={classes.textField}
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
-                                    />
-                                    <TextField
-                                        id="datetime-local"
-                                        label="Quantity"
-                                        type="number"
-                                        className={classes.textField}
-                                        InputLabelProps={{
-                                            shrink: true,
-                                        }}
-                                    />
-                                </form>
+                                <div>
+                                    <form noValidate>
+                                        <Select
+                                            onChange={(valueString) => {
+                                                setProductName(
+                                                    valueString.currentTarget
+                                                        .value
+                                                );
+                                            }}
+                                        >
+                                            {Array.from(allProducts).map(
+                                                (lay) => (
+                                                    <option
+                                                        key={lay.idProduct}
+                                                        value={lay.productName}
+                                                    >
+                                                        {lay.productName}
+                                                    </option>
+                                                )
+                                            )}
+                                        </Select>
+                                        <Input
+                                            type="number"
+                                            placeholder="Quantity"
+                                            onChange={(valueString) => {
+                                                setQuantity(
+                                                    valueString.currentTarget
+                                                        .value
+                                                );
+                                            }}
+                                        />
+                                    </form>
 
-                                <Button>Add Product</Button>
-                                <Button>Finish Bill</Button>
+                                    <Button
+                                        colorScheme="facebook"
+                                        onClick={() => addProduct()}
+                                    >
+                                        Add Product
+                                    </Button>
+                                    <Button
+                                        colorScheme="facebook"
+                                        onClick={() => finish()}
+                                    >
+                                        Finish Bill
+                                    </Button>
+
+                                    <Button variant="ghost">
+                                        <InfoOutlineIcon></InfoOutlineIcon>
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
-                    ) : Array.from(reserved).length ? (
-                        <div>
-                            Pentru aceasta masa s-a facut o rezervare pentru
-                            ora:{" "}
-                            {new Date(
-                                reservation.reservationStartTime
-                            ).getHours() -
-                                3 +
-                                ":" +
-                                new Date(
+                        ) : Array.from(reserved).length ? (
+                            <div>
+                                Pentru aceasta masa s-a facut o rezervare pentru
+                                ora:{" "}
+                                {new Date(
                                     reservation.reservationStartTime
-                                ).getMinutes()}
-                            <div>
-                                <Button>Cancel Reservation</Button>
-                                <Button>Start Order</Button>
+                                ).getHours() -
+                                    3 +
+                                    ":" +
+                                    new Date(
+                                        reservation.reservationStartTime
+                                    ).getMinutes()}
+                                <div>
+                                    <Button
+                                        colorScheme={"facebook"}
+                                        variant="ghost"
+                                        onClick={() =>
+                                            cancelReservation(
+                                                reservation.idReservation
+                                            )
+                                        }
+                                    >
+                                        Cancel Reservation
+                                    </Button>
+                                    <Button
+                                        colorScheme={"facebook"}
+                                        variant="ghost"
+                                        onClick={() =>
+                                            startReservedOrder(
+                                                reservation.idReservation
+                                            )
+                                        }
+                                    >
+                                        Start Order
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
-                    ) : (
-                        <div>
-                            Aceasta masa este libera momentan!
-                            <form className={classes.container} noValidate>
-                                <TextField
-                                    id="datetime-local"
-                                    label="Reservation Start Time:"
-                                    type="datetime-local"
-                                    defaultValue="2022-06-17T10:30"
-                                    className={classes.textField}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />
-                                <TextField
-                                    id="datetime-local"
-                                    label="Number Of Hours:"
-                                    type="number"
-                                    className={classes.textField}
-                                    InputLabelProps={{
-                                        shrink: true,
-                                    }}
-                                />
-                            </form>
-                            <div>
-                                <Button>Add Reservation</Button>
-                                <Button>Start Order</Button>
+                        ) : (
+                            <div className="FreeTable">
+                                This table is free!
+                                <form className="form" noValidate>
+                                    Add Reservation
+                                    <Input
+                                        type="datetime-local"
+                                        onChange={(valueString) => {
+                                            setDate(
+                                                valueString.currentTarget.value
+                                            );
+                                        }}
+                                    ></Input>
+                                    <Divider orientation="vertical"></Divider>
+                                    <Input
+                                        type="number"
+                                        placeholder="Number Of Hours"
+                                        onChange={(valueString) => {
+                                            setTime(
+                                                valueString.currentTarget.value
+                                            );
+                                        }}
+                                    ></Input>
+                                </form>
+                                <div>
+                                    <Button
+                                        colorScheme={"facebook"}
+                                        variant="ghost"
+                                        onClick={() => makeReservation()}
+                                    >
+                                        Add Reservation
+                                    </Button>
+                                    <Button
+                                        colorScheme={"facebook"}
+                                        variant="ghost"
+                                        onClick={() => startOrder()}
+                                    >
+                                        Start Order
+                                    </Button>
+                                </div>
                             </div>
-                        </div>
-                    )}
-                </ModalBody>
+                        )}
+                    </ModalBody>
+                </div>
             </ModalContent>
         </Modal>
     );

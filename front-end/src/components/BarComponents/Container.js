@@ -5,8 +5,10 @@ import { DraggableBox } from "../BarComponents/Box";
 const styles = {
     width: 800,
     height: 800,
+    background: "white",
+    display: "flex",
+    position: "center",
     border: "1px solid black",
-    position: "relative",
 };
 export const Container = ({ idLayout }) => {
     const [boxes, setBoxes] = useState({});
@@ -24,7 +26,7 @@ export const Container = ({ idLayout }) => {
     }, [idLayout]);
 
     return (
-        <div style={styles}>
+        <div style={styles} className="tables">
             {Array.from(boxes).map((box) => (
                 <DraggableBox
                     key={box.idTable}

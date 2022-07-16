@@ -1,18 +1,18 @@
 .login {
-    margin: 5% auto;
-    width: 40%;
-    box-shadow: 0 5px 8px 0 rgba(0, 0, 0, 0.2), 0 7px 20px 0 rgba(0, 0, 0, 0.2);
+    width: 30%;
     position: relative;
     border-radius: 10px;
-    height: 600px;
+    top: 25%;
+    height: 50%;
     display: grid;
     grid-template-columns: 1fr 1fr;
-    background-color: rgb(216, 124, 124);
+    background-color: rgb(255, 255, 255, 80%);
 }
 
 .login-right {
     border-radius: 0 10px 10px 0;
     position: relative;
+    border-radius: 10px;
 }
 
 .container {
@@ -36,10 +36,9 @@
 .title {
     font-size: 2rem;
     text-align: center;
-    margin-right: 15%;
-    width: 80%;
+    width: 90%;
     margin-bottom: 1rem;
-    color: #fff;
+    color: black;
 }
 
 .inputContainer {
@@ -50,23 +49,4 @@
     height: 40px;
     width: 100%;
     border: none;
-}
-
-.register-label {
-    position: absolute;
-    top: 15px;
-    left: 15px;
-    padding: 0 4px;
-    background-color: white;
-    color: #dadce0;
-    font-size: 16px;
-    transition: 0.5s;
-    z-index: 0;
-}
-.form-input-login {
-    font-size: 0.8rem;
-    margin-top: 10px;
-    color: #fff;
-    width: 80%;
-    text-align: center;
 }

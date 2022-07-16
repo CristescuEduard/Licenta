@@ -6,12 +6,14 @@ import NavBarMain from "../../components/NavBarMain/NavBarMain";
 import axios from "axios";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Button from "@material-ui/core/Button";
+import "./KitchenOrder.css";
 
 const useStyles = makeStyles((theme) => ({
     root: {
         width: "1370px",
         border: "solid",
-        height: "1000px",
+        background: "azure",
+        height: "200%",
         overflow: "auto",
     },
 }));

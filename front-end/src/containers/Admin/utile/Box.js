@@ -1,32 +1,59 @@
 import { memo } from "react";
 import { Button } from "@chakra-ui/react";
+import { useDisclosure } from "react-use-disclosure";
 import "./Box.css";
+import AdminModal from "../../../components/AdminComponents/AdminModal";
 
-export const Box = memo(function Box({ tableName, orientation, tableSize }) {
-    const afisare = async (e) => {
-        console.log(tableName, orientation, tableSize);
-    };
+export const Box = memo(function Box({
+    tableName,
+    orientation,
+    tableSize,
+    table,
+}) {
+    var { isOpen, open, close } = useDisclosure();
 
     if (orientation === "Horizontal") {
         return (
-            <Button
-                onClick={afisare}
-                width={tableSize * 25}
-                height="60px"
-                colorScheme={"facebook"}
-            >
-                {tableName}
-            </Button>
+            <div>
+                <Button
+                    onClick={() => {
+                        open();
+                        isOpen = true;
+                    }}
+                    width={tableSize * 25}
+                    height="60px"
+                    colorScheme={"facebook"}
+                >
+                    {tableName}
+                </Button>
+                <AdminModal
+                    close={close}
+                    isOpen={isOpen}
+                    table={table}
+                    idMasa={tableName}
+                />
+            </div>
         );
     } else
         return (
-            <Button
-                onClick={afisare}
-                id="rotate"
-                width={tableSize * 25}
-                colorScheme={"facebook"}
-            >
-                <div className="rotateText">{tableName}</div>
-            </Button>
+            <div>
+                <Button
+                    onClick={() => {
+                        open();
+                        isOpen = true;
+                    }}
+                    id="rotate"
+                    width={tableSize * 25}
+                    colorScheme={"facebook"}
+                >
+                    <div className="rotateText">{tableName}</div>
+                </Button>
+                <AdminModal
+                    close={close}
+                    isOpen={isOpen}
+                    table={table}
+                    idMasa={tableName}
+                />
+            </div>
         );
 });

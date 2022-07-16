@@ -6,13 +6,7 @@ import BarModal from "./BarModal";
 import axios from "axios";
 import React, { useState, useEffect } from "react";
 
-export const Box = memo(function Box({
-    tableName,
-    orientation,
-    tableSize,
-    boxes,
-    box,
-}) {
+export const Box = memo(function Box({ orientation, tableSize, boxes, box }) {
     var { isOpen, open, close } = useDisclosure();
     const [reservations, setReservations] = useState({});
     const [filtered, setFiltered] = useState({});
@@ -91,6 +85,7 @@ export const Box = memo(function Box({
                     reserved={filtered}
                     reservation={reservation}
                     ordered={ordered}
+                    trueId={box.idTable}
                     id={Array.from(boxes).indexOf(box) + 1}
                 />
             </div>
@@ -122,6 +117,7 @@ export const Box = memo(function Box({
                     reserved={filtered}
                     ordered={ordered}
                     reservation={reservation}
+                    trueId={box.idTable}
                     id={Array.from(boxes).indexOf(box) + 1}
                 />
             </div>

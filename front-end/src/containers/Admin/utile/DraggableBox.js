@@ -10,13 +10,12 @@ function getStyles(tableX, tableY, isDragging) {
         transform,
         WebkitTransform: transform,
         opacity: isDragging ? 0 : 1,
-        height: isDragging ? 0 : "",
+        height: isDragging,
     };
 }
 
-export const DraggableBox = memo(function DraggableBox(props) {
-    const { id, id1, tableName, tableX, tableY, orientation, tableSize } =
-        props;
+export const DraggableBox = memo(function DraggableBox(props, { box }) {
+    const { id, tableName, tableX, tableY, orientation, tableSize } = props;
     const [{ isDragging }, drag, preview] = useDrag(
         () => ({
             type: ItemTypes.BOX,
@@ -37,6 +36,7 @@ export const DraggableBox = memo(function DraggableBox(props) {
                 tableName={tableName + " " + props.id1}
                 orientation={orientation}
                 tableSize={tableSize}
+                table={props}
             />
         </div>
     );

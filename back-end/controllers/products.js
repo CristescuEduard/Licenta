@@ -1,4 +1,6 @@
 const ProductDB = require("../models").Products;
+const RecipesDB = require("../models").Recipes;
+const IngredientDB = require("../models").Ingredients;
 const controller = {
     addProduct: async (req, res) => {
         try {
@@ -38,6 +40,21 @@ const controller = {
         try {
             const products = await ProductDB.findAll({
                 where: { subCategory: req.params.subCategory },
+            });
+            if (products) {
+                return res.status(200).send(products);
+            } else {
+                return res.status(404).send({ message: "Not found" });
+            }
+        } catch (err) {
+            return res.status(500).send(err);
+        }
+    },
+
+    getProductsByCategory: async (req, res) => {
+        try {
+            const products = await ProductDB.findAll({
+                where: { category: "kitchen" },
             });
             if (products) {
                 return res.status(200).send(products);
@@ -93,6 +110,48 @@ const controller = {
             }
         } catch (err) {
             return res.status(500).send(err);
+        }
+    },
+
+    getIngredientsForProduct: async (req, res) => {
+        try {
+            const order = await ProductDB.findOne({
+                where: { idProduct: req.params.productId },
+                include: [
+                    {
+                        model: RecipesDB,
+                        include: [
+                            {
+                                model: IngredientDB,
+                            },
+                        ],
+                    },
+                ],
+            });
+            return res.status(200).send(order.dataValues.Recipes);
+        } catch (err) {
+            return res.status(500).send(err);
+        }
+    },
+
+    delete: async (req, res) => {
+        try {
+            if (req.params.productId > 0) {
+                let product = await ProductDB.findOne({
+                    where: { idProduct: req.params.productId },
+                });
+
+                if (product == null) {
+                    res.status(404).send({ message: "Product not found" });
+                } else {
+                    ProductDB.destroy({
+                        where: { idProduct: req.params.productId },
+                    });
+                    res.status(201).send({ message: "Product deleted" });
+                }
+            }
+        } catch (err) {
+            res.status(500).send({ message: `${err}` });
         }
     },
 };

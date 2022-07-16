@@ -48,6 +48,26 @@ const controller = {
             res.status(500).send({ message: `${err}` });
         }
     },
+
+    deleteReservations: async (req, res) => {
+        try {
+            if (req.params.reservationId > 0) {
+                let reservation = await ReservationsDB.findOne({
+                    where: { idReservation: req.params.reservationId },
+                });
+                if (reservation == null) {
+                    res.status(404).send({ message: "reservation not found" });
+                } else {
+                    ReservationsDB.destroy({
+                        where: { idReservation: req.params.reservationId },
+                    });
+                    res.status(201).send({ message: "reservation deleted" });
+                }
+            }
+        } catch (err) {
+            res.status(500).send({ message: `${err}` });
+        }
+    },
 };
 
 module.exports = controller;

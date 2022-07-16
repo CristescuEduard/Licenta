@@ -44,12 +44,14 @@ db.Tables.hasMany(db.Reservations, {
     foreignKey: { name: "idTable", allowNull: false },
 });
 
-db.Reservations.hasOne(db.Orders, { foreignKey: { name: "idOrder" } });
-
 db.Products.belongsToMany(db.Orders, { through: "Bills" });
 
 db.Orders.hasMany(db.Bills);
 db.Bills.hasOne(db.Products, { foreignKey: { name: "idProduct" } });
+
+db.Ingredients.belongsToMany(db.Products, { through: "Recipes" });
+db.Products.hasMany(db.Recipes);
+db.Recipes.hasOne(db.Ingredients, { foreignKey: { name: "idIngredient" } });
 
 db.Layouts.hasMany(db.Tables, {
     foreignKey: { name: "idLayout", allowNull: false },

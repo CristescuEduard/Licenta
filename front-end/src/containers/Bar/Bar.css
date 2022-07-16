@@ -1,0 +1,10 @@
+.BarPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.ReservationButton {
+    padding-top: 2%;
+}

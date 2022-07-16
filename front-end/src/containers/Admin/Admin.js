@@ -68,7 +68,7 @@ function Admin() {
     }, []);
 
     const addTable = async (e) => {
-        tableName = "Masa";
+        tableName = "Table";
         axios.post("http://localhost:8080/addTable", {
             tableName,
             orientation,
@@ -111,7 +111,7 @@ function Admin() {
             <DndProvider backend={HTML5Backend}>
                 <Example idLayout={idLayout} />
             </DndProvider>
-            <div>
+            <div className="sideZone">
                 <Button
                     onClick={() => {
                         setOverlay(<OverlayOne />);
@@ -121,18 +121,22 @@ function Admin() {
                 >
                     Add Table
                 </Button>
-                <Select
-                    placeholder={activeLayoutName}
-                    onChange={(valueString) =>
-                        setIdLayout(parseInt(valueString.currentTarget.value))
-                    }
-                >
-                    {Array.from(layouts).map((lay) => (
-                        <option key={lay.idLayout} value={lay.idLayout}>
-                            {lay.layoutName}
-                        </option>
-                    ))}
-                </Select>
+                <div>
+                    <Select
+                        placeholder={activeLayoutName}
+                        onChange={(valueString) =>
+                            setIdLayout(
+                                parseInt(valueString.currentTarget.value)
+                            )
+                        }
+                    >
+                        {Array.from(layouts).map((lay) => (
+                            <option key={lay.idLayout} value={lay.idLayout}>
+                                {lay.layoutName}
+                            </option>
+                        ))}
+                    </Select>
+                </div>
                 <Popover>
                     <PopoverTrigger>
                         <Button>Add Layout</Button>

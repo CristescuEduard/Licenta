@@ -5,6 +5,8 @@ const tables = require("./tables");
 const bills = require("./bills");
 const layouts = require("./layout");
 const reserations = require("./reservations");
+const ingredients = require("./ingredients");
+const recipes = require("./recipes");
 const controllers = {
     users,
     products,
@@ -13,5 +15,7 @@ const controllers = {
     bills,
     layouts,
     reserations,
+    ingredients,
+    recipes,
 };
 module.exports = controllers;

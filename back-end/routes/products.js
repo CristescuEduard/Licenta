@@ -8,5 +8,10 @@ router.get(
     "/getProductsBySubCategory/:subCategory",
     productsController.getProductsBySubCategory
 );
-
+router.get("/getProductsByCategory/", productsController.getProductsByCategory);
+router.get(
+    "/getIngredientsForProduct/:productId",
+    productsController.getIngredientsForProduct
+);
+router.delete("/deleteProduct/:productId", productsController.delete);
 module.exports = router;

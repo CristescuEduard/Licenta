@@ -7,5 +7,18 @@ const tables = require("./tables");
 const bills = require("./bills");
 const layouts = require("./layouts");
 const reservations = require("./reservations");
-router.use("/", users, products, orders, tables, bills, layouts, reservations);
+const ingredients = require("./ingredients");
+const recipes = require("./recipes");
+router.use(
+    "/",
+    users,
+    products,
+    orders,
+    tables,
+    bills,
+    layouts,
+    reservations,
+    ingredients,
+    recipes
+);
 module.exports = router;

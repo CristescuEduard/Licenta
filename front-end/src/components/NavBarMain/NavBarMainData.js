@@ -5,37 +5,32 @@ import * as RiIcons from "react-icons/ri";
 
 export const NavBarMainData = [
     {
-        title: "Home",
-        path: "/",
+        title: "Tables",
+        path: "/admin/tables",
         icon: <AiIcons.AiFillHome />,
         cName: "nav-text",
     },
     {
-        title: "Menu",
-        path: "/",
+        title: "Products",
+        path: "/admin/stock",
         icon: <RiIcons.RiAdminLine />,
         cName: "nav-text",
     },
     {
-        title: "Gallery",
-        path: "/gallery",
+        title: "Add User",
+        path: "/register",
         icon: <MdIcons.MdEvent />,
         cName: "nav-text",
     },
     {
-        title: "About US",
-        path: "/",
+        title: "Statistics",
+        path: "/admin/statistics",
         icon: <RiIcons.RiBriefcase4Line />,
         cName: "nav-text",
     },
     {
-        title: "Log In",
-        path: "/login",
-        cName: "nav-text",
-    },
-    {
-        title: "Register",
-        path: "/register",
+        title: "Log Out",
+        path: "/",
         cName: "nav-text",
     },
 ];
