@@ -112,12 +112,16 @@ function DrawerExample() {
                                                                 start hour:{" "}
                                                                 {new Date(
                                                                     reservation.reservationStartTime
-                                                                ).getHours()}{" "}
+                                                                ).getHours() -
+                                                                    3}{" "}
                                                                 duration:{" "}
                                                                 {
                                                                     reservation.time
                                                                 }{" "}
-                                                                hours
+                                                                hours for:
+                                                                {
+                                                                    reservation.name
+                                                                }
                                                                 <Button
                                                                     variant="ghost"
                                                                     onClick={() =>

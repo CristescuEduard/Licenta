@@ -2,7 +2,12 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Container from "../../components/BarComponents/Container";
 import "./Bar.css";
+import { Button } from "@chakra-ui/react";
 import DrawerExample from "../../components/BarComponents/DrawerReservations";
+
+function handleLogout() {
+    window.location.replace("/");
+}
 function Bar() {
     const [idLayout, setIdLayout] = useState(0);
 
@@ -22,6 +27,11 @@ function Bar() {
             <Container idLayout={idLayout} />
             <div className="ReservationButton">
                 <DrawerExample />
+                {/* <div className="logout"> */}
+                <Button colorScheme="teal" onClick={handleLogout}>
+                    Log Out
+                </Button>
+                {/* </div> */}
             </div>
         </div>
     );

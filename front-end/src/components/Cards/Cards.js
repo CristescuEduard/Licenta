@@ -133,7 +133,11 @@ export default function RecipeReviewCard({ order }) {
                                         </ListItemIcon>
                                         <ListItemText
                                             id={labelId}
-                                            primary={value.Product.productName}
+                                            primary={
+                                                value.Product.productName +
+                                                " x " +
+                                                value.productQuantity
+                                            }
                                         />
                                         <ListItemSecondaryAction></ListItemSecondaryAction>
                                     </ListItem>

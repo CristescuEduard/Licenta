@@ -5,7 +5,7 @@ import RecipeReviewCard from "../../components/Cards/Cards";
 import NavBarMain from "../../components/NavBarMain/NavBarMain";
 import axios from "axios";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
-import Button from "@material-ui/core/Button";
+import { Button } from "@chakra-ui/react";
 import "./KitchenOrder.css";
 
 const useStyles = makeStyles((theme) => ({
@@ -17,6 +17,10 @@ const useStyles = makeStyles((theme) => ({
         overflow: "auto",
     },
 }));
+
+function handleLogout() {
+    window.location.replace("/");
+}
 
 export default function AutoGrid() {
     const classes = useStyles();
@@ -45,7 +49,6 @@ export default function AutoGrid() {
     }
     return (
         <div className="Grid">
-            <NavBarMain />
             <div>
                 <ButtonGroup
                     disableElevation
@@ -63,6 +66,12 @@ export default function AutoGrid() {
                             </Grid>
                         ))}
                     </Grid>
+                </div>
+
+                <div className="logout">
+                    <Button colorScheme="teal" onClick={handleLogout}>
+                        Log Out
+                    </Button>
                 </div>
             </div>
         </div>

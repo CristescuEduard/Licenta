@@ -31,6 +31,7 @@ export default function BarModal({
     const finalRef = React.useRef(null);
     const [editing, setEditing] = useState(1);
     const [total, setTotal] = useState(1);
+    const [name, setName] = useState("");
     const [products, setProducts] = useState({});
     const [allProducts, setAllProducts] = useState({});
     const [productName, setProductName] = useState("");
@@ -103,6 +104,7 @@ export default function BarModal({
                     reservationStartTime: data,
                     time: time,
                     idTable: trueId,
+                    name: name,
                 });
                 window.location.reload();
             } else {
@@ -469,6 +471,14 @@ export default function BarModal({
                                         placeholder="Number Of Hours"
                                         onChange={(valueString) => {
                                             setTime(
+                                                valueString.currentTarget.value
+                                            );
+                                        }}
+                                    ></Input>
+                                    <Input
+                                        placeholder="Name"
+                                        onChange={(valueString) => {
+                                            setName(
                                                 valueString.currentTarget.value
                                             );
                                         }}

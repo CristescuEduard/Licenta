@@ -4,7 +4,15 @@ import axios from "axios";
 import "./Statistics.css";
 var data = [];
 
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const COLORS = [
+    "#0088FE",
+    "#00C49F",
+    "#FFBB28",
+    "#FF8042",
+    "#B22C36",
+    "#39DFE3",
+    "#D8ED4E",
+];
 
 const RADIAN = Math.PI / 180;
 
@@ -29,7 +37,7 @@ const renderCustomizedLabel = ({
             textAnchor={x > cx ? "start" : "end"}
             dominantBaseline="central"
         >
-            {`${(percent * 100).toFixed(0)}%`} - {data[index].name}
+            {`${(percent * 100).toFixed(0)}%`}
         </text>
     );
 };
@@ -62,15 +70,34 @@ function Statistics() {
             sumaGarnituri += product.price * product.totalQuantity;
         else if (product.subCategory === "Desert")
             sumaDesert += product.price * product.totalQuantity;
+        else if (product.subCategory === "MainCourse")
+            sumaMainCourse += product.price * product.totalQuantity;
+        else if (product.subCategory === "Grill")
+            sumaGrill += product.price * product.totalQuantity;
+        else if (product.subCategory === "Vin")
+            sumaVin += product.price * product.totalQuantity;
+        else if (product.subCategory === "Bere")
+            sumaBere += product.price * product.totalQuantity;
     });
 
     data = [
         { name: "Bauturi", value: sumaBauturi },
         { name: "Desert", value: sumaDesert },
         { name: "Garnituri", value: sumaGarnituri },
+        { name: "Vin", value: sumaVin },
+        { name: "Bere", value: sumaBere },
+        { name: "Grill", value: sumaGrill },
+        { name: "Main", value: sumaMainCourse },
     ];
 
-    suma = sumaDesert + sumaGarnituri + sumaBauturi;
+    suma =
+        sumaDesert +
+        sumaGarnituri +
+        sumaBauturi +
+        sumaBere +
+        sumaGrill +
+        sumaMainCourse +
+        sumaVin;
 
     data.copyWithin(data);
 
@@ -99,7 +126,7 @@ function Statistics() {
                 {data.map((dat) => {
                     return (
                         <div>
-                            Suma din {dat.name} este de {dat.value} RON
+                            Suma din {dat.name} este de {dat.value} RON{" "}
                         </div>
                     );
                 })}

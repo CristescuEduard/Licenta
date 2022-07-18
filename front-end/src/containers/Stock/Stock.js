@@ -8,6 +8,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDisclosure } from "react-use-disclosure";
+import NavBarMain from "../../components/NavBarMain/NavBarMain";
 import CustomModal from "../../components/customModal/CustomModal";
 import "./Stock.css";
 
@@ -63,6 +64,7 @@ function Stock() {
 
     return (
         <div className="Stock">
+            <NavBarMain />
             <Box w="30%" overflow="hidden" h="40%">
                 <div className={classes.root}>
                     <Input

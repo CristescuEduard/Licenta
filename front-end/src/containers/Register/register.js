@@ -3,7 +3,7 @@ import NavBarMain from "../../components/NavBarMain/NavBarMain";
 import { Button, Input, useToast } from "@chakra-ui/react";
 import "./register.css";
 import axios from "axios";
-import { RiWindowsFill } from "react-icons/ri";
+
 function Register() {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
@@ -38,8 +38,8 @@ function Register() {
                         position: "top-right",
                         duration: 3000,
                     });
-                });
-            window.location.reload(false);
+                })
+                .then(window.location.reload(false));
         } else {
             toast({
                 title: "Error",
