@@ -12,8 +12,8 @@ import {
     Input,
     Divider,
     Select,
+    useToast,
 } from "@chakra-ui/react";
-import { InfoOutlineIcon } from "@chakra-ui/icons";
 import { AddIcon, MinusIcon } from "@chakra-ui/icons";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
@@ -37,6 +37,7 @@ export default function BarModal({
     const [quantity, setQuantity] = useState(0);
     const [date, setDate] = useState(new Date());
     const [time, setTime] = useState(0);
+    const toast = useToast();
     var sum = 0;
     useEffect(() => {
         try {
@@ -64,7 +65,7 @@ export default function BarModal({
         } catch (err) {
             console.error(err.response);
         }
-    }, [ordered]);
+    });
 
     function startOrder() {
         try {
@@ -95,30 +96,65 @@ export default function BarModal({
 
     function makeReservation() {
         try {
-            let data = new Date(date);
-            data.setHours(new Date(date).getHours() + 3);
-            axios.post("http://localhost:8080/addReservation", {
-                reservationStartTime: data,
-                time: time,
-                idTable: trueId,
-            });
-            window.location.reload();
+            if (new Date(date) > new Date()) {
+                let data = new Date(date);
+                data.setHours(new Date(date).getHours() + 3);
+                axios.post("http://localhost:8080/addReservation", {
+                    reservationStartTime: data,
+                    time: time,
+                    idTable: trueId,
+                });
+                window.location.reload();
+            } else {
+                toast({
+                    title: "Error",
+                    description: "Pick a date greater then today!",
+                    status: "error",
+                    isClosable: true,
+                    position: "top-right",
+                    duration: 3000,
+                });
+            }
         } catch (err) {
             console.error(err.response);
         }
     }
 
-    function incrementQuantity(idProduct, idOrder, productQuantity) {
+    function incrementQuantity(product, idProduct, idOrder, productQuantity) {
         productQuantity++;
         setEditing(editing + 1);
-        try {
-            axios.put("http://localhost:8080/modifyBill", {
-                idProduct,
-                idOrder,
-                productQuantity,
+        if (product.Product.totalQuantity > 0) {
+            try {
+                axios
+                    .put("http://localhost:8080/modifyBill", {
+                        idProduct,
+                        idOrder,
+                        productQuantity,
+                    })
+                    .then(
+                        axios.put(
+                            "http://localhost:8080/modifyQuantity/" + idProduct,
+                            {
+                                quantity: 1,
+                                sign: 0,
+                            }
+                        )
+                    );
+            } catch (err) {
+                console.error(err.response);
+            }
+        } else {
+            toast({
+                title: "Error",
+                description:
+                    "There are only " +
+                    product.Product.totalQuantity +
+                    " products available",
+                status: "error",
+                isClosable: true,
+                position: "top-right",
+                duration: 3000,
             });
-        } catch (err) {
-            console.error(err.response);
         }
     }
 
@@ -132,15 +168,38 @@ export default function BarModal({
         let product = Array.from(allProducts).find(
             (prod) => prod.productName === productName
         );
-        try {
-            axios.post("http://localhost:8080/addBill", {
-                productQuantity: quantity,
-                ProductIdProduct: product.idProduct,
-                OrderIdOrder: ordered.idOrder,
+        if (quantity <= product.totalQuantity) {
+            try {
+                axios
+                    .post("http://localhost:8080/addBill", {
+                        productQuantity: quantity,
+                        ProductIdProduct: product.idProduct,
+                        OrderIdOrder: ordered.idOrder,
+                    })
+                    .then(
+                        axios.put(
+                            "http://localhost:8080/modifyQuantity/" +
+                                product.idProduct,
+                            { quantity: quantity, sign: 0 }
+                        )
+                    );
+
+                setEditing(editing + 1);
+            } catch (err) {
+                console.error(err.response);
+            }
+        } else {
+            toast({
+                title: "Error",
+                description:
+                    "There are only " +
+                    product.totalQuantity +
+                    " products available",
+                status: "error",
+                isClosable: true,
+                position: "top-right",
+                duration: 3000,
             });
-            setEditing(editing + 1);
-        } catch (err) {
-            console.error(err.response);
         }
     }
     function decrementQuantity(idProduct, idOrder, productQuantity) {
@@ -148,22 +207,42 @@ export default function BarModal({
         setEditing(editing - 1);
         if (productQuantity > 0) {
             try {
-                axios.put("http://localhost:8080/modifyBill", {
-                    idProduct,
-                    idOrder,
-                    productQuantity,
-                });
+                axios
+                    .put("http://localhost:8080/modifyBill", {
+                        idProduct,
+                        idOrder,
+                        productQuantity,
+                    })
+                    .then(
+                        axios.put(
+                            "http://localhost:8080/modifyQuantity/" + idProduct,
+                            {
+                                quantity: 1,
+                                sign: 1,
+                            }
+                        )
+                    );
             } catch (err) {
                 console.error(err.response);
             }
         } else {
             try {
-                axios.delete(
-                    "http://localhost:8080/deleteBill/" +
-                        idOrder +
-                        "/" +
-                        idProduct
-                );
+                axios
+                    .delete(
+                        "http://localhost:8080/deleteBill/" +
+                            idOrder +
+                            "/" +
+                            idProduct
+                    )
+                    .then(
+                        axios.put(
+                            "http://localhost:8080/modifyQuantity/" + idProduct,
+                            {
+                                quantity: 1,
+                                sign: 1,
+                            }
+                        )
+                    );
             } catch (err) {
                 console.error(err.response);
             }
@@ -237,15 +316,17 @@ export default function BarModal({
                                                             .idProduct
                                                     }
                                                 >
-                                                    Product:{" "}
                                                     {
                                                         product.Product
                                                             .productName
                                                     }{" "}
                                                     Price:{" "}
-                                                    {product.Product.price}{" "}
+                                                    {product.Product.price}
+                                                    {" RON "}
                                                     Quantity:{" "}
-                                                    {product.productQuantity}{" "}
+                                                    {
+                                                        product.productQuantity
+                                                    }{" "}
                                                     {"   "}
                                                     <Button
                                                         onClick={() =>
@@ -263,6 +344,7 @@ export default function BarModal({
                                                     <Button
                                                         onClick={() =>
                                                             incrementQuantity(
+                                                                product,
                                                                 product.ProductIdProduct,
                                                                 product.OrderIdOrder,
                                                                 product.productQuantity
@@ -326,9 +408,9 @@ export default function BarModal({
                                         Finish Bill
                                     </Button>
 
-                                    <Button variant="ghost">
+                                    {/* <Button variant="ghost">
                                         <InfoOutlineIcon></InfoOutlineIcon>
-                                    </Button>
+                                    </Button> */}
                                 </div>
                             </div>
                         ) : Array.from(reserved).length ? (

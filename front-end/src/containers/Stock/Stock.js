@@ -9,7 +9,6 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDisclosure } from "react-use-disclosure";
 import CustomModal from "../../components/customModal/CustomModal";
-import NavBarMain from "../../components/NavBarMain/NavBarMain";
 import "./Stock.css";
 
 const useStyles = makeStyles((theme) => ({
@@ -64,8 +63,6 @@ function Stock() {
 
     return (
         <div className="Stock">
-            <NavBarMain />
-
             <Box w="30%" overflow="hidden" h="40%">
                 <div className={classes.root}>
                     <Input

@@ -36,6 +36,7 @@ const renderCustomizedLabel = ({
 
 function Statistics() {
     const [products, setProducts] = useState({});
+    var suma = 0;
     var sumaBauturi = 0;
     var sumaDesert = 0;
     var sumaGarnituri = 0;
@@ -69,6 +70,8 @@ function Statistics() {
         { name: "Garnituri", value: sumaGarnituri },
     ];
 
+    suma = sumaDesert + sumaGarnituri + sumaBauturi;
+
     data.copyWithin(data);
 
     return (
@@ -92,6 +95,17 @@ function Statistics() {
                     ))}
                 </Pie>
             </PieChart>
+            <div className="sideZone">
+                {data.map((dat) => {
+                    return (
+                        <div>
+                            Suma din {dat.name} este de {dat.value} RON
+                        </div>
+                    );
+                })}
+
+                <div> Total : {suma} RON</div>
+            </div>
         </div>
     );
 }

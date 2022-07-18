@@ -1,4 +1,5 @@
 const BillsDB = require("../models").Bills;
+const ProductDB = require("../models").Products;
 const controller = {
     addBill: async (req, res) => {
         try {
@@ -26,8 +27,11 @@ const controller = {
                     OrderIdOrder: req.body.idOrder,
                 },
             });
-            if (bill)
+
+            if (bill) {
                 bill.update({ productQuantity: req.body.productQuantity });
+            }
+
             return res.status(200).send("A mers");
         } catch (err) {
             res.status(500).send({ message: `${err}` });

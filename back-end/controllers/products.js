@@ -113,6 +113,30 @@ const controller = {
         }
     },
 
+    modifyQuantity: async (req, res) => {
+        try {
+            const product = await ProductDB.findOne({
+                where: { idProduct: req.params.productId },
+            });
+
+            if (product != null) {
+                const cantitate1 = req.body.quantity;
+                const cantitate = product.dataValues.totalQuantity;
+
+                if (req.body.sign == 1)
+                    product.update({
+                        totalQuantity: cantitate + cantitate1,
+                    });
+                else
+                    product.update({
+                        totalQuantity: cantitate - cantitate1,
+                    });
+            }
+            return res.status(200).send("siu");
+        } catch (err) {
+            return res.status(500).send(err);
+        }
+    },
     getIngredientsForProduct: async (req, res) => {
         try {
             const order = await ProductDB.findOne({

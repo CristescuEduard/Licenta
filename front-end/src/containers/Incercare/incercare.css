@@ -1,0 +1,30 @@
+.titlu {
+    color: white;
+    font-weight: bold;
+    font-size: large;
+    display: flex;
+    margin-left: 15%;
+}
+.sideZone {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-top: 2%;
+    display: grid;
+    width: 400px;
+    border-radius: 10px;
+    outline: none;
+    border: none;
+    height: 500px;
+    overflow: auto;
+    row-gap: 2%;
+    background-color: rgb(255, 255, 255, 70%);
+}
+
+.barPage {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    row-gap: 10%;
+    column-gap: 10%;
+}

@@ -14,4 +14,5 @@ router.get(
     productsController.getIngredientsForProduct
 );
 router.delete("/deleteProduct/:productId", productsController.delete);
+router.put("/modifyQuantity/:productId", productsController.modifyQuantity);
 module.exports = router;

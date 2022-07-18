@@ -1,4 +1,7 @@
 .class {
-    height: 500;
-    width: 500;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    row-gap: 10%;
+    column-gap: 10%;
 }
